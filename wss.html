@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+   <head>
+      <meta charset = utf-8>
+      <title>HTML5 Chat</title>
+		</head>	
+      <body>
+		
+         <section id = "wrapper">
+			
+            <header>
+               <h1>HTML5 Chat</h1>
+            </header>
+				
+            <style>
+               #chat { width: 97%; }
+               .message { font-weight: bold; }
+               .message:before { content: ' '; color: #bbb; font-size: 14px; }
+					
+               #log {
+                  overflow: auto;
+                  max-height: 300px;
+                  list-style: none;
+                  padding: 0;
+               }
+					
+               #log li {
+                  border-top: 1px solid #ccc;
+                  margin: 0;
+                  padding: 10px 0;
+               }
+					
+               body {
+                  font: normal 16px/20px "Helvetica Neue", Helvetica, sans-serif;
+                  background: rgb(237, 237, 236);
+                  margin: 0;
+                  margin-top: 40px;
+                  padding: 0;
+               }
+					
+               section, header {
+                  display: block;
+               }
+					
+               #wrapper {
+                  width: 600px;
+                  margin: 0 auto;
+                  background: #fff;
+                  border-radius: 10px;
+                  border-top: 1px solid #fff;
+                  padding-bottom: 16px;
+               }
+					
+               h1 {
+                  padding-top: 10px;
+               }
+					
+               h2 {
+                  font-size: 100%;
+                  font-style: italic;
+               }
+					
+               header, article > * {
+                  margin: 20px;
+               }
+					
+               #status {
+                  padding: 5px;
+                  color: #fff;
+                  background: #ccc;
+               }
+					
+               #status.fail {
+                  background: #c00;
+               }
+					
+               #status.success {
+                  background: #0c0;
+               }
+					
+               #status.offline {
+                  background: #c00;
+               }
+					
+               #status.online {
+                  background: #0c0;
+               }
+					
+               #html5badge {
+                  margin-left: -30px;
+                  border: 0;
+               }
+					
+               #html5badge img {
+                  border: 0;
+               }
+            </style>
+				
+            <article>
+				
+               <form onsubmit = "addMessage(); return false;">
+                  <input type = "text" id = "chat" placeholder = "type and press 
+                  enter to chat" />
+               </form>
+					
+               <p id = "status">Not connected</p>
+               <p>Users connected: <span id = "connected">0
+                  </span></p>
+               <ul id = "log"></ul>
+					
+            </article>
+				
+            <script>
+               var socket = new WebSocket("wss://backend.thinger.io/v3/users/hc/devices/hcmain/resources?authorization=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJEYXNoYm9hcmRfMSIsInVzciI6ImhjIn0.gK3ikR1pi7crMYj0r8dZfGCXXfNGLbSkR-QKF0ktp8s");
+
+socket.onopen = function(e) {
+  console.log("[open] Connection established, send -> server");
+  socket.send({"resource":"LED_1","in":true});
+};
+
+socket.onmessage = function(event) {
+  console.log("Message Rec:- "+event.data);
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    console.log("[close] Connection closed cleanly, code=${event.code} reason=${event.reason}");
+  } else {
+    // e.g. server process killed or network down
+    // event.code is usually 1006 in this case
+    console.log("[close] Connection died");
+  }
+};
+
+socket.onerror = function(error) {
+  console.log("[error] ${error.message}");
+};
+            </script>
+				
+         </section>
+			
+      </body>
+	
+</html>
